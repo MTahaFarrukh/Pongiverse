@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h> // For sleep()
 
+
 // Screen and game object constants
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 800;
@@ -203,7 +204,8 @@ int main(void)
             }
 
             // Check for collision with Left Paddle
-            if (ballPosition.x <= paddle1X + currentPaddle.width &&
+            if (ballPosition.x >= paddle1X &&
+                ballPosition.x <= paddle1X + currentPaddle.width &&
                 ballPosition.y + BALL_SIZE >= paddle1Y && ballPosition.y <= paddle1Y + currentPaddle.height) {
                 ballVelocity.x *= -1;  // Reverse X direction
                 ballPosition.x = paddle1X + currentPaddle.width;  // Adjust to avoid overlap
@@ -211,7 +213,8 @@ int main(void)
             }
 
             // Check for collision with Right Paddle
-            if (ballPosition.x + BALL_SIZE >= paddle2X &&
+            if (ballPosition.x >= paddle2X &&
+                ballPosition.x + BALL_SIZE >= paddle2X &&
                 ballPosition.y + BALL_SIZE >= paddle2Y && ballPosition.y <= paddle2Y + currentPaddle.height) {
                 ballVelocity.x *= -1;  // Reverse X direction
                 ballPosition.x = paddle2X - BALL_SIZE; // Adjust position to avoid overlap
