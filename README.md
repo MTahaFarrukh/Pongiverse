@@ -26,6 +26,7 @@ const int BALL_SIZE = 25;
 const int PADDLE_SPEED = 5;
 const int BALL_SPEED = 600;
 const float SCORE_DELAY = 2.0f; // 2-second delay after scoring
+
 int main(void) 
     {
         typedef enum {
@@ -33,6 +34,7 @@ int main(void)
         MODE_TABLE_TENNIS,
         MODE_AIR_HOCKEY
     } GameMode;
+    
     GameMode currentMode = MODE_TENNIS; // Default mode
     // Initialize the game window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pongiverse");
