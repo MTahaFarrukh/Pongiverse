@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <unistd.h> // For sleep()
 
-
 // Screen and game object constants
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 800;
@@ -26,7 +25,7 @@ int main(void)
 
     GameMode currentMode = MODE_TENNIS; // Default mode
     // Initialize the game window
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pong Game with Background");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pongiverse");
     InitAudioDevice(); // Initialize audio system for sound effects
     Texture2D currentBackground;
     Texture2D currentPaddle;
@@ -41,6 +40,7 @@ int main(void)
     Texture2D instructionsTexture3 = LoadTexture("instructions3.png");
     Texture2D instructionsTexture4 = LoadTexture("instructions4.png");
     Texture2D instructionsTexture5 = LoadTexture("instructions5.png");
+  
 
     // Store all textures in an array for easy access
     Texture2D instructionsTextures[5] = { instructionsTexture1, instructionsTexture2, instructionsTexture3, instructionsTexture4, instructionsTexture5 };
@@ -90,6 +90,11 @@ int main(void)
 
     int score1 = 0;  // Left player score
     int score2 = 0;  // Right player score
+    char player1Name[50] = ""; // Player 1 name input
+    char player2Name[50] = ""; // Player 2 name input
+    int nameMaxLength = 50; // Maximum length of the player names
+    bool nameInputActive = true; // Flag to check if name input is active
+    int currentInput = 1; // 1 for Player 1, 2 for Player 2
 
     SetTargetFPS(120); // Set frame rate
 
@@ -160,6 +165,7 @@ int main(void)
     // Main game loop
     while (!WindowShouldClose()) 
         
+        
     {
     switch (currentMode) 
     {
@@ -213,8 +219,8 @@ int main(void)
             }
 
             // Check for collision with Right Paddle
-            if (ballPosition.x >= paddle2X &&
-                ballPosition.x + BALL_SIZE >= paddle2X &&
+            if (ballPosition.x + BALL_SIZE >= paddle2X &&
+                ballPosition.x  <= paddle2X + currentPaddle.width  &&
                 ballPosition.y + BALL_SIZE >= paddle2Y && ballPosition.y <= paddle2Y + currentPaddle.height) {
                 ballVelocity.x *= -1;  // Reverse X direction
                 ballPosition.x = paddle2X - BALL_SIZE; // Adjust position to avoid overlap
@@ -228,6 +234,7 @@ int main(void)
                 PlaySound(goalSound);  // Play goal sound
                 scoreTimer = SCORE_DELAY;
                 ballPosition = (Vector2){(SCREEN_WIDTH / 2) - (BALL_SIZE / 2), (SCREEN_HEIGHT / 2) - (BALL_SIZE / 2)};
+                
             }
             if (ballPosition.x > SCREEN_WIDTH) {
                 score1++;  // Left player scores
