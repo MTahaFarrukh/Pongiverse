@@ -12,23 +12,20 @@ The game name is Pongiverse, it is a 2 player game where the players control pad
 
 Requirements for the code to run:
 You need to set up raylib on your pc/laptop and if you are running the code on your vs make sure the raylib files are in the folder where your game's code is-->
+
 #include <raylib.h>
 #include <stdio.h>
 #include <unistd.h> // For sleep()
-
 // Screen and game object constants
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 800;
 const int PADDLE_WIDTH = 15;
 const int PADDLE_HEIGHT = 150;
 const int BALL_SIZE = 25;
-
 // Paddle and ball speed
 const int PADDLE_SPEED = 5;
 const int BALL_SPEED = 600;
 const float SCORE_DELAY = 2.0f; // 2-second delay after scoring
-
-
 int main(void) 
     {
         typedef enum {
@@ -36,7 +33,6 @@ int main(void)
         MODE_TABLE_TENNIS,
         MODE_AIR_HOCKEY
     } GameMode;
-
     GameMode currentMode = MODE_TENNIS; // Default mode
     // Initialize the game window
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pongiverse");
