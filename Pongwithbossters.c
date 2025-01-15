@@ -104,6 +104,17 @@ int main(void)
     bool gameEnded = false; // Flag to check if the game has ended
     bool instructionsScreen = false; 
     bool homeScreen = true;
+    
+    //game ending declarations
+     // Rectangle bar properties
+    int barWidth = 400;
+    int barHeight = 150;
+    int barX = (SCREEN_WIDTH - barWidth) / 2;
+    int barY = (SCREEN_HEIGHT - barHeight) / 2;
+
+    // Buttons for "Restart" and "Quit"
+    Rectangle restartButton = {barX + 50, barY + 60, 120, 40};
+    Rectangle quitButton = {barX + 230, barY + 60, 120, 40};
 
     while (homeScreen && !WindowShouldClose()) 
     {
@@ -161,12 +172,32 @@ int main(void)
             instructionsScreen = false; // Proceed to the game
         }
     }
-
+bool isPaused = false;
     // Main game loop
     while (!WindowShouldClose()) 
         
         
     {
+        // Toggle pause state
+    if (IsKeyPressed(KEY_P)) {
+        isPaused = !isPaused;
+    }
+
+    if (isPaused) {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        // Display "Paused" message
+        DrawText("PAUSED", SCREEN_WIDTH / 2 - MeasureText("PAUSED", 80) / 2, SCREEN_HEIGHT / 2 - 40, 80, RED);
+        DrawText("Press P to Resume", SCREEN_WIDTH / 2 - MeasureText("Press P to Resume", 40) / 2, SCREEN_HEIGHT / 2 + 50, 40, DARKGRAY);
+        DrawText("Press Q to Quit", SCREEN_WIDTH / 2 - MeasureText("Press Q to Quit", 40) / 2, SCREEN_HEIGHT / 2 + 100, 40, DARKGRAY);
+
+        // Quit if Q is pressed
+        if (IsKeyPressed(KEY_Q)) break;
+
+        EndDrawing();
+        continue;
+    }
     switch (currentMode) 
     {
         case MODE_TENNIS:
@@ -215,6 +246,7 @@ int main(void)
                 ballPosition.y + BALL_SIZE >= paddle1Y && ballPosition.y <= paddle1Y + currentPaddle.height) {
                 ballVelocity.x *= -1;  // Reverse X direction
                 ballPosition.x = paddle1X + currentPaddle.width;  // Adjust to avoid overlap
+                
                 PlaySound(currentCollisionSound);  // Play collision sound
             }
 
@@ -224,6 +256,7 @@ int main(void)
                 ballPosition.y + BALL_SIZE >= paddle2Y && ballPosition.y <= paddle2Y + currentPaddle.height) {
                 ballVelocity.x *= -1;  // Reverse X direction
                 ballPosition.x = paddle2X - BALL_SIZE; // Adjust position to avoid overlap
+                
                 PlaySound(currentCollisionSound);  // Play collision sound
             }
 
@@ -255,7 +288,7 @@ int main(void)
         }
 
         // Check for game end condition
-    if (score1 == 7 || score2 == 7) 
+    if (score1 ==  7 || score2 == 7) 
     {
         if (!gameEnded) 
         {  // Ensure sound is played only once
@@ -263,6 +296,30 @@ int main(void)
             ballActive = false;
             PlaySound(gameEndSound); // Play game end sound
         }
+        if (gameEnded) {
+   
+
+   
+
+    // Handle user input
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        Vector2 mousePos = GetMousePosition();
+
+        if (CheckCollisionPointRec(mousePos, restartButton)) {
+            // Restart the game
+            score1 = 0;
+            score2 = 0;
+            ballPosition = (Vector2){(SCREEN_WIDTH / 2) - (BALL_SIZE / 2), (SCREEN_HEIGHT / 2) - (BALL_SIZE / 2)};
+            ballVelocity = (Vector2){BALL_SPEED, BALL_SPEED};
+            ballActive = true;
+            gameEnded = false;
+        } else if (CheckCollisionPointRec(mousePos, quitButton)) {
+            // Quit the game
+            break;
+        }
+    }
+}
+
     }
         // Render game elements
         BeginDrawing();
@@ -293,14 +350,27 @@ int main(void)
         // Display win message
         if (score1 == 7) 
         {
-            DrawTextEx(scoreFont, "Player 1 Wins!", (Vector2){370, 375}, 80, 2, WHITE);
+            DrawTextEx(scoreFont, "Player 1 Wins!", (Vector2){360, 250}, 80, 2, WHITE);
         } 
         else if (score2 == 7) 
         {
-            DrawTextEx(scoreFont, "Player 2 Wins!", (Vector2){350, 375}, 80, 2, WHITE);
+            DrawTextEx(scoreFont, "Player 2 Wins!", (Vector2){350, 250}, 80, 2, WHITE);
+        }
+        if(gameEnded){
+        // Render the rectangle bar
+    DrawRectangle(barX, barY, barWidth, barHeight, DARKBLUE); // Background
+    DrawTextEx(scoreFont, "Game Over", (Vector2){barX + 100, barY + 15}, 50, 1, WHITE);  // Title text
+   
+    // Render the buttons
+    DrawRectangleRec(restartButton, LIGHTGRAY);
+    DrawRectangleRec(quitButton, LIGHTGRAY);
+    DrawTextEx(scoreFont, "Restart", (Vector2){restartButton.x + 6, restartButton.y + 6}, 35, 1, DARKBLUE);
+    DrawTextEx(scoreFont, "Quit", (Vector2){quitButton.x + 28, quitButton.y + 5}, 35, 1, DARKBLUE);
+    
         }
 
         EndDrawing();
+        
     }
 
     // Unload resources
